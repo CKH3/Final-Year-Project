@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Store the mesh data and can create a new mesh by Create()
 public class MeshData
 {
     public Vector3[] vertices;
