@@ -10,7 +10,7 @@ using UnityEngine;
 **/
 public class EndlessTerrain : MonoBehaviour
 {   
-    public const float scale = 5f;
+    public const float scale = 15f;
     const float viewerMoveThresholdForChunkUpdate = 25f;
 
     public LODInfo[] detailLevels;
@@ -62,6 +62,8 @@ public class EndlessTerrain : MonoBehaviour
         //Calculate the viewer position in chunk coordinate
         int currentChunkCoordinateX = Mathf.RoundToInt(viewerPosition.x/chunkSize);
         int currentChunkCoordinateY = Mathf.RoundToInt(viewerPosition.y/chunkSize);
+
+        Debug.Log(currentChunkCoordinateX+","+currentChunkCoordinateY);
 
         //Get all the chunk that are within the view distance and make them visable
         for(int yOffset = -chunkVisibleInViewDist; yOffset <= chunkVisibleInViewDist; yOffset++){

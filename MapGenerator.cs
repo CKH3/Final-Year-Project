@@ -81,7 +81,6 @@ public class MapGenerator : MonoBehaviour
             default:
                 break;
         }
-
     }
 
     public void RequestMapData(Vector2 centre,Action<MapData> callback){
