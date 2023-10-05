@@ -13,6 +13,7 @@ public class LODMesh
     public Mesh mesh;
     public bool hasRequestedMesh;
     public bool hasMesh;
+    public bool[,] treeMapData;
     int lod;
     System.Action updateCallback;
 
@@ -24,12 +25,13 @@ public class LODMesh
     void OnMeshDataReceived(MeshData meshData){
         this.mesh = meshData.CreateMesh();
         hasMesh = true;
-
+        
         updateCallback();
     }
 
     public void RequestMeshData(MapData mapData){
         hasRequestedMesh = true;
         EndlessTerrain.mapGenerator.RequestMeshData(mapData,lod,OnMeshDataReceived);
+        treeMapData = TreeGenerator.GenerateTreeMap(mapData.heghtMap,MapGenerator.mapChunkSize-1,20);
     }
 }

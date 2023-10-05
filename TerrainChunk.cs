@@ -50,7 +50,6 @@ public class TerrainChunk
     void OnMapDataReceived(MapData mapData){
         this.mapData = mapData;
         mapDataReceived = true;
-
         Texture2D texture = TextureGenerator.TextureFromColorMap(mapData.colorMap,MapGenerator.mapChunkSize,MapGenerator.mapChunkSize);
         meshRenderer.material.mainTexture = texture;
         UpdateTerrainChunk();
@@ -72,16 +71,15 @@ public class TerrainChunk
                 }
 
                 if(lodIndex != previousLODIndex){
-                    Debug.Log("Hello");
+                    // Debug.Log("Hello");
                     LODMesh lodMesh = lodMeshes[lodIndex];
                     if(lodMesh.hasMesh){
                         meshFilter.mesh = lodMesh.mesh;
                         previousLODIndex = lodIndex;
                         meshCollider.sharedMesh = lodMesh.mesh;
-                        Debug.Log("Has Mesh!");
+                        EndlessTerrain.treeGenerator.CreateTrees(meshObject.transform,lodMesh.treeMapData,position,mapData.heghtMap);
                     }else if(!lodMesh.hasRequestedMesh){
                         lodMesh.RequestMeshData(mapData);
-                        Debug.Log("Mesh Requested!");
                     }
                 }
                 EndlessTerrain.terrainChunksVisibleLastUpdate.Add(this);

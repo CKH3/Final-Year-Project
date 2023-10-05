@@ -51,15 +51,22 @@ public class MapGenerator : MonoBehaviour
     public AnimationCurve meshHeightCurve;//Adjust the height of vertices
 
     public bool useFalloutMap;
+    public bool useEndlessTerrainScale;
+    public bool generateTrees;
     public bool autoUpdate;
     public TerrainType[] regions;//Set the color for a certain height range
 
     float[,] falloutMap;
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new Queue<MapThreadInfo<MapData>>();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
+    [SerializeField]
+    Transform[] editorMapTransformArray;
 
     void Awake() {
         falloutMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
+        foreach(Transform mapTransform in editorMapTransformArray){
+            mapTransform.gameObject.SetActive(false);
+        }
     }
     //Call by the MapEditorGenerator Class for testing
     public void DrawMapInEditor(){
@@ -80,6 +87,9 @@ public class MapGenerator : MonoBehaviour
                 break;
             default:
                 break;
+        }
+        if(generateTrees){
+            mapDisplay.DrawTree(TreeGenerator.GenerateTreeMap(mapData.heghtMap,mapChunkSize-1,20),meshHeightMultiplier, mapData.heghtMap, meshHeightCurve);
         }
     }
 
@@ -156,17 +166,6 @@ public class MapGenerator : MonoBehaviour
         return new MapData(noiseMap,colorMap);
     }
 
-    //Prevent error input in Editor
-    void OnValidate() {
-        if(lacunarity < 1){
-            lacunarity = 1;
-        }
-        if(octaves < 0){
-            octaves = 0;
-        }
-        falloutMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
-    }
-
     //Thread data storage structrue
     struct MapThreadInfo<T>{
         public readonly Action<T> callback;//Function that get back the output
@@ -176,5 +175,16 @@ public class MapGenerator : MonoBehaviour
             this.callback = callback;
             this.parameter = parameter;
         }
+    }
+
+    //Prevent error input in Editor
+    void OnValidate() {
+        if(lacunarity < 1){
+            lacunarity = 1;
+        }
+        if(octaves < 0){
+            octaves = 0;
+        }
+        falloutMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
     }
 }

@@ -10,22 +10,24 @@ using UnityEngine;
 **/
 public class EndlessTerrain : MonoBehaviour
 {   
-    public const float scale = 15f;
+    public const float scale = 15;
     const float viewerMoveThresholdForChunkUpdate = 25f;
 
     public LODInfo[] detailLevels;
-    public static float maxViewDist = 300; // Adjust the number of showing terrain
+    public static float maxViewDist; // Adjust the number of showing terrain
     
     public Transform viewer;
     public Material mapMaterial;
 
     public static Vector2 viewerPosition;
     public static MapGenerator mapGenerator;
+    public static WaterGenerator waterGenerator;
+    public static TreeGenerator treeGenerator;
+
     Vector2 previousViewerPosition;
     int chunkSize; //240
     int chunkVisibleInViewDist; //number of chunk can see in one direction
 
-    [SerializeField]
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();// keep the reference for all generated terrain chunks
     public static List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>();
 
@@ -33,9 +35,12 @@ public class EndlessTerrain : MonoBehaviour
     void Start()
     {
         mapGenerator = FindObjectOfType<MapGenerator>();
+        waterGenerator = FindObjectOfType<WaterGenerator>();
+        treeGenerator = FindObjectOfType<TreeGenerator>();
         maxViewDist = detailLevels[detailLevels.Length-1].visibleDistanceThreshold;
         chunkSize = MapGenerator.mapChunkSize - 1;
         chunkVisibleInViewDist = Mathf.RoundToInt(maxViewDist/chunkSize);
+        viewerPosition = Vector3.zero;
 
         UpdateVisibleChunks();
     }
@@ -50,6 +55,9 @@ public class EndlessTerrain : MonoBehaviour
             UpdateVisibleChunks();
             previousViewerPosition = viewerPosition;
         }
+
+        //Update Water Rendering
+        waterGenerator.CreateWaterMap(viewerPosition*scale);
     }
 
     //Check whether the terrain chunks is visible or not
@@ -78,5 +86,6 @@ public class EndlessTerrain : MonoBehaviour
                 }
             }
         }
+
     }
 }
